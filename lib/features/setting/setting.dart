@@ -90,19 +90,8 @@ class _SettingState extends ConsumerState<Setting>
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: defaultSize),
         children: <Widget>[
-          if (!isUserPro)
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: ProButton(
-                key: const Key('setting.upgrade_pro_button'),
-                label: isExpired
-                    ? 'renew_pro_subscription'.i18n
-                    : 'upgrade_to_pro'.i18n,
-                onPressed: () {
-                  appRouter.push(Plans());
-                },
-              ),
-            ),
+          // دکمه Upgrade to Pro حذف شد
+
           const SizedBox(height: defaultSize),
           if (userLoggedIn || isUserPro)
             AppCard(
@@ -136,30 +125,9 @@ class _SettingState extends ConsumerState<Setting>
               ),
             ),
           const SizedBox(height: defaultSize),
-          if (!isAuthenticated)
-            AppCard(
-              padding: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  AppTile(
-                    tileKey: const Key('setting.sign_in_tile'),
-                    label: 'sign_in'.i18n,
-                    icon: AppImagePaths.signIn,
-                    onPressed: () => settingMenuTap(_SettingType.signIn),
-                  ),
-                  DividerSpace(),
-                  // Pre-v10 users look for the old device link code here.
-                  AppTile(
-                    tileKey: const Key('setting.authorize_device_tile'),
-                    label: 'authorize_device_for_pro'.i18n,
-                    icon: AppImagePaths.connectDevice,
-                    onPressed: () =>
-                        settingMenuTap(_SettingType.authorizeDevice),
-                  ),
-                ],
-              ),
-            ),
-          const SizedBox(height: defaultSize),
+
+          // بخش Sign In و Authorize Device for Pro حذف شد
+
           AppCard(
             padding: EdgeInsets.zero,
             child: Column(
@@ -253,23 +221,7 @@ class _SettingState extends ConsumerState<Setting>
                     );
                   },
                 ),
-                if (!isStoreVersion()) ...[
-                  DividerSpace(),
-                  AppTile(
-                    label: 'get_30_days_of_pro_free'.i18n,
-                    icon: AppImagePaths.star,
-                    onPressed: () => settingMenuTap(_SettingType.getPro),
-                  ),
-                ],
-                if (canUseStoreBilling() && !isUserPro) ...[
-                  DividerSpace(),
-                  AppTile(
-                    label: 'restore_purchase'.i18n,
-                    icon: AppImagePaths.restorePurchase,
-                    onPressed: () =>
-                        settingMenuTap(_SettingType.restorePurchase),
-                  ),
-                ],
+                // Get 30 days of Pro free و Restore Purchase حذف شدند
               ],
             ),
           ),
