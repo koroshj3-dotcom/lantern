@@ -1,21 +1,7 @@
-name: lantern
-description: Lantern
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+name: q_vpn
+description: Q VPN
+publish_to: "none"
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
 version: 9.0.29+96
 
 environment:
@@ -23,128 +9,62 @@ environment:
   flutter: ">=3.41.0 <4.0.0"
 
 dependency_overrides:
-  auto_updater:
-    git:
-      url: https://github.com/getlantern/auto_updater.git
-      path: packages/auto_updater
-      ref: 53aeeb5f3f5a115297ed9aebd48bfb53aa7b70da
-  auto_updater_macos:
-    git:
-      url: https://github.com/getlantern/auto_updater.git
-      path: packages/auto_updater_macos
-      ref: 53aeeb5f3f5a115297ed9aebd48bfb53aa7b70da
-  auto_updater_platform_interface:
-    git:
-      url: https://github.com/getlantern/auto_updater.git
-      path: packages/auto_updater_platform_interface
-      ref: 53aeeb5f3f5a115297ed9aebd48bfb53aa7b70da
-  auto_updater_windows:
-    git:
-      url: https://github.com/getlantern/auto_updater.git
-      path: packages/auto_updater_windows
-      ref: 53aeeb5f3f5a115297ed9aebd48bfb53aa7b70da
-  # 12.6.x bumps the native Stripe SDKs (iOS ~>25.9), keep in step with flutter_stripe 12.4.0
   stripe_android: 12.4.0
   stripe_ios: 12.4.0
   in_app_purchase_storekit: 0.4.8+1
-  # 0.5.0 = Play Billing Library 8.0.0; later 0.5.x need Flutter >=3.44.
   in_app_purchase_android: 0.5.0
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
+
 dependencies:
   flutter:
     sdk: flutter
-
   flutter_localizations:
     sdk: flutter
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+
   cupertino_icons: ^1.0.8
-  # paths
   path: ^1.9.1
   path_provider: ^2.1.5
-  #Routing
   auto_route: ^11.1.0
-  #UI Utils
   flutter_earth_globe: ^2.2.0
   lottie: ^3.3.1
   animated_toggle_switch: ^0.8.7
   animated_text_kit: ^4.3.0
   flutter_screenutil: ^5.9.3
   auto_size_text: ^3.0.0
-
   badges: ^3.2.0
   pinput: ^6.0.2
   email_validator: ^3.0.0
   shimmer: ^3.0.0
-  #Loading
   animated_loading_border: ^0.0.2
   loader_overlay: ^5.0.0
-
-  #Localization
   i18n_extension: ^15.1.1
   i18n_extension_importer: ^0.0.6
   intl: ^0.20.2
-
-  #Images
   flutter_svg: ^2.3.0
-  # Logs
   flutter_loggy: ^2.0.3+1
   loggy: ^2.0.3
-  #FFI gen
   ffi: ^2.2.0
-  #State management
   flutter_riverpod: ^3.3.1
   hooks_riverpod: ^3.3.1
   flutter_hooks: ^0.21.3+1
   riverpod_annotation: ^4.0.2
-  # dependency injection
   get_it: ^9.2.1
-  #fonts
   google_fonts: ^8.0.2
-  #env
   flutter_dotenv: ^6.0.0
   url_launcher: ^6.3.2
-  # share
   share_plus: ^13.2.0
-  # QR code rendering
   qr_flutter: ^4.1.0
-  # Deeplink handling
   app_links: ^7.0.0
-  # Desktop
-  window_manager: ^0.5.2
-  screen_retriever: ^0.2.2
-  tray_manager:
-    git:
-      url: https://github.com/getlantern/tray_manager.git
-      path: packages/tray_manager
-      ref: e4f69663ca467c1108c1ccad9f55cf5a2154adc2
-  win32_registry: ^3.0.3
-  # Utils
   fpdart: ^1.2.0
   jwt_decoder: ^2.0.1
   mobile_scanner: ^7.2.0
   device_info_plus: ^13.2.0
-
   flutter_inappwebview: ^6.1.5
-  desktop_webview_window: ^0.3.0
   store_checker: ^1.8.0
   in_app_review: ^2.0.12
-  # payment
   in_app_purchase: ^3.3.0
-  # Imported directly for the StoreKit 2 product type and intro-offer
-  # eligibility check (affiliate pricing).
   in_app_purchase_storekit: 0.4.8+1
   flutter_stripe: 12.4.0
-  # protobuf
   protobuf: ^6.0.0
-  # auto updates
-  auto_updater: ^1.0.0
-  # notifications
   flutter_local_notifications: ^22.2.0
   timezone: ^0.11.1
   flutter_timezone: ^5.1.0
@@ -153,8 +73,6 @@ dependencies:
   shared_preferences: ^2.5.5
   flutter_carousel_widget: ^3.1.1
   file_selector: ^1.1.0
-  desktop_drop: ^0.7.1
-  cross_file: ^0.3.5+2
   image_picker: ^1.2.2
   http: ^1.2.0
   pub_semver: ^2.1.4
@@ -168,49 +86,15 @@ dev_dependencies:
   auto_route_generator: ^10.4.0
   build_runner: ^2.12.2
   riverpod_generator: ^4.0.3
-
   riverpod_lint: ^3.1.3
   ffigen: ^21.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-  # Opt this project out of Flutter's Swift Package Manager auto-migration
-  # for iOS/macOS. The project resolves all native darwin dependencies via
-  # CocoaPods (macos/Podfile, ios/Podfile) and has no checked-in
-  # Package.swift/Package.resolved. `flutter run`/`flutter build` silently
-  # add SwiftPM integration on top of that when the local `flutter config`
-  # has enable-swift-package-manager on (as it does on some dev machines),
-  # which breaks the macOS build: screen_retriever_macos's own Package.swift
-  # still declares a macOS 10.14 minimum, one below the 10.15 the new
-  # FlutterFramework SwiftPM product requires, so Xcode fails with "package
-  # product 'FlutterFramework' requires minimum platform version 10.15 ...
-  # but this target supports 10.14 (in target 'screen_retriever_macos')".
-  # Disabling SPM here keeps every machine on the CocoaPods path that
-  # already works, regardless of that machine's global flutter config.
-  config:
-    enable-swift-package-manager: false
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
   assets:
     - assets/
     - assets/images/
-    - path: assets/images/flags/
-      platforms:
-        - windows
-        - macos
-        - linux
-    # Scoped to windows (not declared under `fonts:`) so the .ttf stays out
-    # of the Android APK. Loaded at runtime via FontLoader.
-    - path: assets/fonts/TwemojiMozilla.ttf
-      platforms:
-        - windows
     - assets/locales/
     - assets/unbounded/
     - app.env
@@ -221,4 +105,3 @@ ffigen:
   headers:
     entry-points:
       - "bin/**/liblantern.h"
-      - "bin/windows-amd64/liblantern.h"
