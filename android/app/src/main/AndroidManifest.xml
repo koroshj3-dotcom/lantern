@@ -18,7 +18,7 @@
     <application
         android:name=".LanternApp"
         android:icon="@mipmap/ic_launcher"
-        android:label="Lantern"
+        android:label="Q VPN"
         android:usesCleartextTraffic="${usesCleartextTraffic}"
         android:roundIcon="@mipmap/ic_launcher_round">
 
