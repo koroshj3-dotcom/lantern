@@ -56,7 +56,7 @@ try {
   $script:M = @{endpoint='https://update.staging.iantem.io/update/lantern'; bridge_version='7.9.6'; installer_version='10.99.1';
     artifacts=@{seed=@{sha256=('a' * 64)}; bridge=@{sha256=('b' * 64)}; installer=@{sha256=('c' * 64)}}}
   $script:Result = @{}
-  $script:routeURLOverrides = @{}
+  $script:routeOfferOverrides = @{}
   function Invoke-WebRequest {
     param($Uri, $Method, $ContentType, $Body, $Headers, $MaximumRedirection, $TimeoutSec, [switch]$SkipHttpErrorCheck)
     $request = $Body | ConvertFrom-Json -AsHashtable
@@ -65,12 +65,15 @@ try {
     $hop = if ($seed) {'bridge'} else {'installer'}
     $version = if ($seed) {'7.9.6'} else {'10.99.1'}
     $arch = if ($seed) {'386'} else {'amd64'}
-    $url = if ($script:routeURLOverrides.ContainsKey($hop)) {$script:routeURLOverrides[$hop]} else {
-      "https://update.staging.iantem.io/update/lantern/windows-migration/$arch/$version"
-    }
-    return @{StatusCode=200; Content=(@{version=$version; initiative='auto'; patch_url=''; patch_type='';
+    $offer = @{version=$version; initiative='auto'; patch_url=''; patch_type='';
       checksum=$script:M.artifacts[$hop].sha256; update_type=$(if ($seed) {'binary'} else {'installer'});
-      target_arch=$arch; url=$url} | ConvertTo-Json -Compress)}
+      target_arch=$arch; url="https://update.staging.iantem.io/update/lantern/windows-migration/$arch/$version"}
+    if ($script:routeOfferOverrides.ContainsKey($hop)) {
+      foreach ($field in $script:routeOfferOverrides[$hop].Keys) {
+        $offer[$field] = $script:routeOfferOverrides[$hop][$field]
+      }
+    }
+    return @{StatusCode=200; Content=($offer | ConvertTo-Json -Compress)}
   }
   Check-Routes
   foreach ($badURL in @(
@@ -83,13 +86,23 @@ try {
     'https://update.staging.iantem.io/update/lantern/windows-migration/386/7.9.6?download=1',
     'https://update.staging.iantem.io/update/lantern/windows-migration/386/7.9.6#fragment'
   )) {
-    $script:routeURLOverrides = @{bridge=$badURL}
+    $script:routeOfferOverrides = @{bridge=@{url=$badURL}}
     try { Check-Routes; throw 'accepted_wrong_download_url' }
     catch { if ($_.Exception.Data['migration-e2e-code'] -ne 'catalog_drift') { throw } }
   }
-  $script:routeURLOverrides = @{installer='https://update.staging.iantem.io/update/lantern/windows-migration/386/10.99.1'}
+  $script:routeOfferOverrides = @{installer=@{url='https://update.staging.iantem.io/update/lantern/windows-migration/386/10.99.1'}}
   try { Check-Routes; throw 'accepted_wrong_installer_url' }
   catch { if ($_.Exception.Data['migration-e2e-code'] -ne 'catalog_drift') { throw } }
+  foreach ($overrides in @(
+    @{bridge=@{version='7.9.7'}},
+    @{bridge=@{target_arch='amd64'}},
+    @{installer=@{version='10.99.2'}},
+    @{installer=@{target_arch='386'}}
+  )) {
+    $script:routeOfferOverrides = $overrides
+    try { Check-Routes; throw 'accepted_wrong_offer' }
+    catch { if ($_.Exception.Data['migration-e2e-code'] -ne 'catalog_drift') { throw } }
+  }
   'PowerShell parser, read-sharing/error-code, UTC timestamp and download routing checks passed'
 } finally {
   # Only the unique directory created by this test is removed.
