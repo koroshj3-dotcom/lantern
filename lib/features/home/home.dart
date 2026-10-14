@@ -52,9 +52,9 @@ class Home extends HookConsumerWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!context.mounted) return;
           await checkAndShowReferralReward(context, user);
-          // Day-of renewal popup, chained so the dialogs never stack.
-          if (!context.mounted) return;
-          await checkAndShowProRenewalPopup(context, ref);
+          // Day-of renewal popup غیرفعال شد
+          // if (!context.mounted) return;
+          // await checkAndShowProRenewalPopup(context, ref);
         });
       });
       return sub.close;
@@ -62,7 +62,7 @@ class Home extends HookConsumerWidget {
 
     final tabController = useTabController(initialLength: 2);
     // Tell the Action Mode globe whether its tab is on screen so it can mute
-    // its ~60fps sphere re-projection while the user is on the VPN tab
+    // its \~60fps sphere re-projection while the user is on the VPN tab
     // (the globe keeps itself alive across tab switches). The globe
     // lives in tab index 1, so it should animate whenever any part of it
     // is on screen — including mid-swipe. animation.value is the
@@ -169,43 +169,10 @@ class Home extends HookConsumerWidget {
 
     ref.read(appEventProvider);
 
-    // Reconcile the share UI with the backend before anything reads its
-    // state. Peer sharing resumes from persisted settings at process start,
-    // and the peer-status stream is edge-triggered, so without asking
-    // outright the UI opens at mode=off while SmC is already serving.
-    // Deliberately not gated on unboundedAutoEnable: the point is to reflect
-    // what is running, which has nothing to do with the auto-start
-    // preference.
-    // Auto-enable Unbounded — gated on the "Auto-enable Unbounded"
-    // toggle from Unbounded Settings (opt-in, default off) AND the per-user
-    // "Hide Unbounded" toggle. Hiding the tab is the opt-out: a user
-    // who hid Unbounded should not see it silently auto-enable in
-    // the background. Fires from two entry points so the spec's
-    // subtitle "Turn on automatically when Lantern is open" is
-    // honoured whether the user connects the VPN or not:
-    //   1. App launch (this useEffect) — once on Home mount.
-    //   2. VPN connect (ref.listen further down) — on every
-    //      disconnected → connected transition, in case the toggle
-    //      flipped on after launch or the user finally connects.
-    // Both paths gate on (active || probing) to avoid re-triggering
-    // while a Start is in flight, and skip the disclosure dialog
-    // because the user has already opted in via settings.
-    //
-    // The reconciliation must complete before that gate is read, which is
-    // why these are one sequential callback rather than two. Peer sharing
-    // resumes from persisted settings at process start and the peer-status
-    // stream is edge-triggered, so until the UI asks outright it believes
-    // mode=off. Evaluating (active || probing) against that would start
-    // Unbounded on top of an SmC session that is already serving.
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        // Home can be torn down before the frame settles, and again while
-        // the reconciliation is in flight; reading a disposed scope throws.
-        // Same guard the other post-frame callbacks in this file use.
         if (!context.mounted) return;
         if (!unboundedAvailable) return;
-        // Not gated on unboundedAutoEnable: reflecting what is actually
-        // running has nothing to do with the auto-start preference.
         await ref.read(shareProvider.notifier).syncFromBackend(ref);
         if (!context.mounted) return;
         final appSetting = ref.read(appSettingProvider);
@@ -228,13 +195,6 @@ class Home extends HookConsumerWidget {
       if (!appSetting.unboundedAutoEnable) return;
       final share = ref.read(shareProvider);
       if (share.active || share.probing) return;
-      // Call autoStart synchronously — shareProvider is a different
-      // provider than vpnProvider (the one we're listening to), so
-      // mutating it inside this callback doesn't risk a re-entrancy
-      // cycle. The previous Future.microtask defer was unsafe under
-      // teardown: if Home unmounted between the listener firing and
-      // the microtask running, the deferred ref.read would be on a
-      // disposed scope.
       ref.read(shareProvider.notifier).autoStart(ref);
     });
 
@@ -247,10 +207,6 @@ class Home extends HookConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               )
             : LanternLogo(isPro: isUserPro, color: context.textPrimary),
-        // bg/elevated (white in light mode) per the Figma spec — the Home
-        // shell's app bar + tab strip render on a white surface, distinct
-        // from every other screen's app bar which uses the app-wide
-        // bg/surface grey from AppTheme.appBarTheme.
         backgroundColor: context.bgElevated,
         elevation: 5,
         leading: IconButton(
@@ -262,6 +218,8 @@ class Home extends HookConsumerWidget {
           icon: const AppImage(path: AppImagePaths.menu),
         ),
         actions: [
+          // دکمه Sign In حذف شد
+          // فقط اگر کاربر Pro باشه، آیکون اکانت نشون داده می‌شه
           if (isUserPro)
             AppIconButton(
               path: AppImagePaths.accountCircle,
@@ -274,19 +232,8 @@ class Home extends HookConsumerWidget {
                   userLoggedIn: userSignedIn,
                 );
               },
-            )
-          else if (!userLoggedIn)
-            AppTextButton(
-              label: 'sign_in'.i18n,
-              onPressed: () => appRouter.push(const SignInEmail()),
             ),
         ],
-        // Tab strip collapses when Unbounded is unavailable — either the
-        // server flag is off (censored region) or the user hid the tab
-        // in Unbounded Settings. With only one tab left, a strip is just
-        // noise; body falls back to VpnTab directly. On mobile the strip
-        // moves to a bottom nav bar (Scaffold.bottomNavigationBar below)
-        // per the Figma spec, so the AppBar carries no bottom widget there.
         bottom: !showUnboundedTab || PlatformUtils.isMobile
             ? null
             : PreferredSize(
